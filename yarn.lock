@@ -9,14 +9,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@ahava-healthcare/api@workspace:apps/backend"
   dependencies:
-    "@prisma/client": "npm:5.22.0"
+    "@prisma/client": "npm:6.16.2"
     "@types/bcryptjs": "npm:^2.4.6"
     "@types/cors": "npm:^2.8.17"
-    "@types/express": "npm:^4.17.21"
+    "@types/express": "npm:4.17.21"
     "@types/jest": "npm:^29.5.8"
     "@types/jsonwebtoken": "npm:^9.0.5"
     "@types/morgan": "npm:^1.9.9"
-    "@types/multer": "npm:^1.4.11"
+    "@types/multer": "npm:1.4.7"
     "@types/node": "npm:^20.10.0"
     "@types/supertest": "npm:^2.0.16"
     "@types/ws": "npm:^8.5.10"
@@ -1314,15 +1314,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@prisma/client@npm:5.22.0":
-  version: 5.22.0
-  resolution: "@prisma/client@npm:5.22.0"
+"@prisma/client@npm:6.16.2":
+  version: 6.16.2
+  resolution: "@prisma/client@npm:6.16.2"
   peerDependencies:
     prisma: "*"
+    typescript: ">=5.1.0"
   peerDependenciesMeta:
     prisma:
       optional: true
-  checksum: 10c0/ad111b931f184249794f811637456eb38dcfd0d7047e5a1f64804e5256f462fa3ee7c7a552fc8fa181e8daacc2b958af7426cb57bf0dc66605c3ef7c4aef4afb
+    typescript:
+      optional: true
+  checksum: 10c0/2d3356d18de6411dc61b701dfea2a4fc052913f7f7c6019d4cf477a2d391c7ca0adf1601f1d2b9030b5a1c2479b4d7d5b128e1b413218c1b12cd58f1091d2d1a
   languageName: node
   linkType: hard
 
@@ -1566,15 +1569,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express@npm:^4.17.21":
-  version: 4.17.23
-  resolution: "@types/express@npm:4.17.23"
+"@types/express@npm:4.17.21":
+  version: 4.17.21
+  resolution: "@types/express@npm:4.17.21"
   dependencies:
     "@types/body-parser": "npm:*"
     "@types/express-serve-static-core": "npm:^4.17.33"
     "@types/qs": "npm:*"
     "@types/serve-static": "npm:*"
-  checksum: 10c0/60490cd4f73085007247e7d4fafad0a7abdafa34fa3caba2757512564ca5e094ece7459f0f324030a63d513f967bb86579a8682af76ae2fd718e889b0a2a4fe8
+  checksum: 10c0/12e562c4571da50c7d239e117e688dc434db1bac8be55613294762f84fd77fbd0658ccd553c7d3ab02408f385bc93980992369dd30e2ecd2c68c358e6af8fabf
   languageName: node
   linkType: hard
 
@@ -1669,12 +1672,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/multer@npm:^1.4.11":
-  version: 1.4.13
-  resolution: "@types/multer@npm:1.4.13"
+"@types/multer@npm:1.4.7":
+  version: 1.4.7
+  resolution: "@types/multer@npm:1.4.7"
   dependencies:
     "@types/express": "npm:*"
-  checksum: 10c0/aed716fdc0bc8c5bfe6689bfe6569b6743b64be795140e80cab169bfe43f687027880b7fc401fca98f820dd464ad5986093ec322d865116eb31ce29a3361c469
+  checksum: 10c0/0bb0dfc399ef8f4e298eda88ef44ca7e5d2ec5c406ebb79424f88ba556fe26f46b4813b6d3f9c1e4adafc70fdcf89962eb5a0b8bfd726893ad9ece3e96f4f445
   languageName: node
   linkType: hard
 
