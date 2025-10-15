@@ -2,7 +2,7 @@ name: Deploy (Multi-Provider)
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "master"]
 
 jobs:
   build-and-publish:
@@ -52,7 +52,7 @@ jobs:
       - name: Install Railway
         run: curl -fsSL https://railway.app/install.sh | sh
       - name: Railway Deploy (Default)
-        if: ${{ secrets.RAILWAY_TOKEN }}
+        if: ${{ secrets.RAILWAY_TOKEN != '' }}
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
@@ -62,7 +62,7 @@ jobs:
           ~/.railway/bin/railway up --service doctor || echo "Doctor deployment skipped - no Railway token"
           ~/.railway/bin/railway up --service worker || echo "Worker deployment skipped - no Railway token"
       - name: Railway Setup Instructions
-        if: ${{ !secrets.RAILWAY_TOKEN }}
+        if: ${{ secrets.RAILWAY_TOKEN == '' }}
         run: |
           echo "::warning::Railway token not found. Add RAILWAY_TOKEN secret to enable automatic deployment."
           echo "To set up Railway deployment:"
@@ -72,7 +72,7 @@ jobs:
 
   deploy-render:
     needs: build-and-publish
-    if: ${{ secrets.RENDER_API_KEY }}
+    if: ${{ secrets.RENDER_API_KEY != '' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -85,7 +85,7 @@ jobs:
 
   deploy-fly:
     needs: build-and-publish
-    if: ${{ secrets.FLY_API_TOKEN }}
+    if: ${{ secrets.FLY_API_TOKEN != '' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
