@@ -17,6 +17,7 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  register: (data: any) => Promise<void>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
   setUser: (user: User | null) => void;
@@ -35,16 +36,36 @@ export const useAuthStore = create<AuthState>()(
           
           const response = await authAPI.login(email, password);
           
-          if (response.success && response.user) {
+          if (response.data.success && response.data.user) {
             // Cookies are set automatically by the server (httpOnly)
-            // No need to store tokens in localStorage
             set({
-              user: response.user,
+              user: response.data.user,
               isAuthenticated: true,
               isLoading: false,
             });
           } else {
             throw new Error('Login failed');
+          }
+        } catch (error: any) {
+          set({ isLoading: false });
+          throw error;
+        }
+      },
+
+      register: async (data: any) => {
+        try {
+          set({ isLoading: true });
+          
+          const response = await authAPI.register(data);
+          
+          if (response.data.success && response.data.user) {
+            set({
+              user: response.data.user,
+              isAuthenticated: true,
+              isLoading: false,
+            });
+          } else {
+            throw new Error('Registration failed');
           }
         } catch (error: any) {
           set({ isLoading: false });
@@ -72,9 +93,9 @@ export const useAuthStore = create<AuthState>()(
           
           const response = await authAPI.getMe();
           
-          if (response.success && response.user) {
+          if (response.data.success && response.data.user) {
             set({
-              user: response.user,
+              user: response.data.user,
               isAuthenticated: true,
               isLoading: false,
             });
@@ -102,7 +123,7 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: 'auth-storage',
+      name: 'patient-auth-storage',
       partialize: (state) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,
@@ -110,5 +131,4 @@ export const useAuthStore = create<AuthState>()(
     }
   )
 );
-
 

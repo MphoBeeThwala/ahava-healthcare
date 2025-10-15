@@ -1,0 +1,8 @@
+{"timestamp":"2025-10-12T08:36:35.624Z","level":"INFO","message":"Redis connected successfully"}
+{"timestamp":"2025-10-12T08:36:35.629Z","level":"INFO","message":"BullMQ queues initialized"}
+{"timestamp":"2025-10-12T08:36:35.632Z","level":"INFO","message":"BullMQ queues initialized successfully"}
+{"timestamp":"2025-10-12T08:36:35.637Z","level":"INFO","message":"Ahava Healthcare API server running on port 4000","metadata":{"port":"4000","timezone":"Africa/Johannesburg","environment":"development"}}
+{"timestamp":"2025-10-12T09:11:03.642Z","level":"WARN","message":"Route not found","metadata":{"method":"GET","url":"/","ip":"::1"}}
+{"timestamp":"2025-10-12T09:11:05.890Z","level":"WARN","message":"Route not found","metadata":{"method":"GET","url":"/","ip":"::1"}}
+{"timestamp":"2025-10-12T09:13:38.712Z","level":"INFO","message":"Redis connected successfully"}
+{"timestamp":"2025-10-12T09:14:05.790Z","level":"INFO","message":"Redis connected successfully"}

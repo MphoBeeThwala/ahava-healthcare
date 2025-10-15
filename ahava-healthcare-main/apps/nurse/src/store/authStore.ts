@@ -35,11 +35,10 @@ export const useAuthStore = create<AuthState>()(
           
           const response = await authAPI.login(email, password);
           
-          if (response.success && response.user) {
+          if (response.data.success && response.data.user) {
             // Cookies are set automatically by the server (httpOnly)
-            // No need to store tokens in localStorage
             set({
-              user: response.user,
+              user: response.data.user,
               isAuthenticated: true,
               isLoading: false,
             });
@@ -72,9 +71,9 @@ export const useAuthStore = create<AuthState>()(
           
           const response = await authAPI.getMe();
           
-          if (response.success && response.user) {
+          if (response.data.success && response.data.user) {
             set({
-              user: response.user,
+              user: response.data.user,
               isAuthenticated: true,
               isLoading: false,
             });
@@ -102,7 +101,7 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: 'auth-storage',
+      name: 'nurse-auth-storage',
       partialize: (state) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,
@@ -110,5 +109,4 @@ export const useAuthStore = create<AuthState>()(
     }
   )
 );
-
 

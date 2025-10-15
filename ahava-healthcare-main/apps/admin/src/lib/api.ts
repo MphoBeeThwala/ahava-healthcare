@@ -15,11 +15,8 @@ const api: AxiosInstance = axios.create({
 // Request interceptor
 api.interceptors.request.use(
   (config) => {
-    // Get token from localStorage as fallback (for API clients)
-    const token = localStorage.getItem('accessToken');
-    if (token && !config.headers.Authorization) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+    // Cookies are automatically sent with withCredentials: true
+    // No need to manually add Authorization header
     return config;
   },
   (error) => {
@@ -33,28 +30,24 @@ api.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest: any = error.config;
 
-    // Handle 401 errors (token expired)
+    // Handle 401 errors (unauthorized - token expired or invalid)
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
-        // Try to refresh token
+        // Try to refresh token (cookies are automatically sent)
         const response = await axios.post(
           `${API_URL}/api/auth/refresh`,
           {},
           { withCredentials: true }
         );
 
-        if (response.data.accessToken) {
-          localStorage.setItem('accessToken', response.data.accessToken);
-        }
-
+        // New cookies are set automatically by the server
+        // Retry the original request
         return api(originalRequest);
       } catch (refreshError) {
         // Refresh failed, redirect to login
         if (typeof window !== 'undefined') {
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('user');
           window.location.href = '/login';
         }
         return Promise.reject(refreshError);
@@ -74,8 +67,7 @@ export const authAPI = {
 
   logout: async () => {
     const response = await api.post('/api/auth/logout');
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('user');
+    // Cookies are cleared automatically by the server
     return response.data;
   },
 
