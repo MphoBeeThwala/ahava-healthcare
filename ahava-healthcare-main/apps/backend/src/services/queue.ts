@@ -9,53 +9,58 @@ export const QUEUE_NAMES = {
   EMAIL: 'email',
 } as const;
 
-// PDF Export Queue
-export const pdfExportQueue = new Queue(QUEUE_NAMES.PDF_EXPORT, {
-  connection: getRedis(),
-  defaultJobOptions: {
-    removeOnComplete: 10,
-    removeOnFail: 5,
-    attempts: 3,
-    backoff: {
-      type: 'exponential',
-      delay: 2000,
-    },
-  },
-});
-
-// Push Notification Queue
-export const pushNotificationQueue = new Queue(QUEUE_NAMES.PUSH_NOTIFICATION, {
-  connection: getRedis(),
-  defaultJobOptions: {
-    removeOnComplete: 100,
-    removeOnFail: 10,
-    attempts: 3,
-    backoff: {
-      type: 'exponential',
-      delay: 1000,
-    },
-  },
-});
-
-// Email Queue
-export const emailQueue = new Queue(QUEUE_NAMES.EMAIL, {
-  connection: getRedis(),
-  defaultJobOptions: {
-    removeOnComplete: 50,
-    removeOnFail: 10,
-    attempts: 3,
-    backoff: {
-      type: 'exponential',
-      delay: 2000,
-    },
-  },
-});
+// Queue instances (initialized later)
+export let pdfExportQueue: Queue;
+export let pushNotificationQueue: Queue;
+export let emailQueue: Queue;
 
 export const initializeQueue = async () => {
+  const redis = getRedis();
+  
+  // Initialize queues
+  pdfExportQueue = new Queue(QUEUE_NAMES.PDF_EXPORT, {
+    connection: redis,
+    defaultJobOptions: {
+      removeOnComplete: 10,
+      removeOnFail: 5,
+      attempts: 3,
+      backoff: {
+        type: 'exponential',
+        delay: 2000,
+      },
+    },
+  });
+
+  pushNotificationQueue = new Queue(QUEUE_NAMES.PUSH_NOTIFICATION, {
+    connection: redis,
+    defaultJobOptions: {
+      removeOnComplete: 100,
+      removeOnFail: 10,
+      attempts: 3,
+      backoff: {
+        type: 'exponential',
+        delay: 1000,
+      },
+    },
+  });
+
+  emailQueue = new Queue(QUEUE_NAMES.EMAIL, {
+    connection: redis,
+    defaultJobOptions: {
+      removeOnComplete: 50,
+      removeOnFail: 10,
+      attempts: 3,
+      backoff: {
+        type: 'exponential',
+        delay: 2000,
+      },
+    },
+  });
+  
   // Initialize queue events for monitoring
-  const pdfEvents = new QueueEvents(QUEUE_NAMES.PDF_EXPORT, { connection: getRedis() });
-  const pushEvents = new QueueEvents(QUEUE_NAMES.PUSH_NOTIFICATION, { connection: getRedis() });
-  const emailEvents = new QueueEvents(QUEUE_NAMES.EMAIL, { connection: getRedis() });
+  const pdfEvents = new QueueEvents(QUEUE_NAMES.PDF_EXPORT, { connection: redis });
+  const pushEvents = new QueueEvents(QUEUE_NAMES.PUSH_NOTIFICATION, { connection: redis });
+  const emailEvents = new QueueEvents(QUEUE_NAMES.EMAIL, { connection: redis });
 
   // Log queue events
   pdfEvents.on('completed', ({ jobId, returnvalue }) => {

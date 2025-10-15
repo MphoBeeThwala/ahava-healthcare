@@ -35,6 +35,8 @@ export const rateLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   skip: (req) => {
+    // Skip rate limiting in test environment
+    if (process.env.NODE_ENV === 'test') return true;
     // Skip rate limiting for health check
     return req.path === '/health';
   },
@@ -48,6 +50,10 @@ export const authRateLimiter = rateLimit({
   message: {
     error: 'Too many authentication attempts from this IP. Please try again after 15 minutes.',
   },
+  skip: (req) => {
+    // Skip rate limiting in test environment
+    return process.env.NODE_ENV === 'test';
+  },
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -58,6 +64,10 @@ export const registrationRateLimiter = rateLimit({
   max: 3, // Limit each IP to 3 registrations per hour
   message: {
     error: 'Too many registration attempts from this IP. Please try again later.',
+  },
+  skip: (req) => {
+    // Skip rate limiting in test environment
+    return process.env.NODE_ENV === 'test';
   },
   standardHeaders: true,
   legacyHeaders: false,

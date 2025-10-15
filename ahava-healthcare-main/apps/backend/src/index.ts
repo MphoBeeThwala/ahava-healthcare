@@ -1,6 +1,9 @@
+console.log('🚀 Starting Ahava Healthcare Backend...');
+
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+// @ts-ignore
 import compression from 'compression';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
@@ -9,8 +12,10 @@ import { WebSocketServer } from 'ws';
 
 // Load environment variables
 dotenv.config();
+console.log('✓ Environment variables loaded');
 
 // Import routes
+console.log('Loading routes...');
 import authRoutes from './routes/auth';
 import bookingRoutes from './routes/bookings';
 import visitRoutes from './routes/visits';
@@ -18,19 +23,26 @@ import messageRoutes from './routes/messages';
 import paymentRoutes from './routes/payments';
 import adminRoutes from './routes/admin';
 import webhookRoutes from './routes/webhooks';
+console.log('✓ Routes loaded');
 
 // Import middleware
+console.log('Loading middleware...');
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import { rateLimiter } from './middleware/rateLimiter';
 import { authMiddleware } from './middleware/auth';
+console.log('✓ Middleware loaded');
 
 // Import services
+console.log('Loading services...');
 import { initializeRedis } from './services/redis';
 import { initializeQueue } from './services/queue';
 import { initializeWebSocket } from './services/websocket';
+console.log('✓ Services loaded');
 
 // Import logger
+console.log('Loading logger...');
 import logger from './utils/logger';
+console.log('✓ Logger loaded');
 
 const app = express();
 const server = createServer(app);
@@ -105,9 +117,13 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 4000;
 
+console.log('✓ Express app configured');
+
 async function startServer() {
+  console.log('Initializing server...');
   try {
     // Initialize Redis
+    console.log('Connecting to Redis...');
     await initializeRedis();
     logger.info('Redis connected successfully');
 

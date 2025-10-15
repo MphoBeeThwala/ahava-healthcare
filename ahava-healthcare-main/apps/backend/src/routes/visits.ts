@@ -1,6 +1,6 @@
 import { Router, Response, NextFunction } from 'express';
 import { PrismaClient, VisitStatus, UserRole } from '@prisma/client';
-import { authMiddleware, requireNurse, requireDoctor, AuthenticatedRequest } from '../middleware/auth';
+import { authMiddleware, requireNurse, requireDoctor, requireAdmin, AuthenticatedRequest } from '../middleware/auth';
 import { encryptData, decryptData } from '../utils/encryption';
 import { broadcastToUsers } from '../services/websocket';
 import logger from '../utils/logger';
