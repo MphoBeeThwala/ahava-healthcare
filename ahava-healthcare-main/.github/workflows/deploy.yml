@@ -47,55 +47,60 @@ jobs:
   deploy-railway:
     needs: build-and-publish
     runs-on: ubuntu-latest
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - name: Install Railway
         run: curl -fsSL https://railway.app/install.sh | sh
       - name: Railway Deploy (Default)
-        if: ${{ secrets.RAILWAY_TOKEN != '' }}
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          echo "Deploying to Railway (Default Provider)..."
-          ~/.railway/bin/railway up --service api || echo "API deployment skipped - no Railway token"
-          ~/.railway/bin/railway up --service admin || echo "Admin deployment skipped - no Railway token"
-          ~/.railway/bin/railway up --service doctor || echo "Doctor deployment skipped - no Railway token"
-          ~/.railway/bin/railway up --service worker || echo "Worker deployment skipped - no Railway token"
-      - name: Railway Setup Instructions
-        if: ${{ secrets.RAILWAY_TOKEN == '' }}
-        run: |
-          echo "::warning::Railway token not found. Add RAILWAY_TOKEN secret to enable automatic deployment."
-          echo "To set up Railway deployment:"
-          echo "1. Get Railway token from https://railway.app/account/tokens"
-          echo "2. Add RAILWAY_TOKEN secret to GitHub repository"
-          echo "3. Push to main branch to trigger deployment"
+          if [ -n "$RAILWAY_TOKEN" ]; then
+            echo "Deploying to Railway (Default Provider)..."
+            ~/.railway/bin/railway up --service api || echo "API deployment skipped"
+            ~/.railway/bin/railway up --service admin || echo "Admin deployment skipped"
+            ~/.railway/bin/railway up --service doctor || echo "Doctor deployment skipped"
+            ~/.railway/bin/railway up --service worker || echo "Worker deployment skipped"
+          else
+            echo "::warning::Railway token not found. Add RAILWAY_TOKEN secret to enable automatic deployment."
+            echo "To set up Railway deployment:"
+            echo "1. Get Railway token from https://railway.app/account/tokens"
+            echo "2. Add RAILWAY_TOKEN secret to GitHub repository"
+            echo "3. Push to main branch to trigger deployment"
+          fi
 
   deploy-render:
     needs: build-and-publish
-    if: ${{ secrets.RENDER_API_KEY != '' }}
     runs-on: ubuntu-latest
+    env:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - name: Render Deploy (Alternative)
-        env:
-          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
         run: |
-          echo "Deploying to Render (Alternative Provider)..."
-          echo "Import render.yaml in Render dashboard to create services"
+          if [ -n "$RENDER_API_KEY" ]; then
+            echo "Deploying to Render (Alternative Provider)..."
+            echo "Import render.yaml in Render dashboard to create services"
+          else
+            echo "::notice::Render API key not configured. Skipping Render deployment."
+          fi
 
   deploy-fly:
     needs: build-and-publish
-    if: ${{ secrets.FLY_API_TOKEN != '' }}
     runs-on: ubuntu-latest
+    env:
+      FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - name: Setup Flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Deploy to Fly.io (Alternative)
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         run: |
-          echo "Deploying to Fly.io (Alternative Provider)..."
-          flyctl deploy -c deploy/fly/api.fly.toml --image ghcr.io/${{ github.repository_owner }}/kykthuto-api:latest --remote-only || echo "API deployment failed"
-          flyctl deploy -c deploy/fly/worker.fly.toml --image ghcr.io/${{ github.repository_owner }}/kykthuto-worker:latest --remote-only || echo "Worker deployment failed"
+          if [ -n "$FLY_API_TOKEN" ]; then
+            echo "Deploying to Fly.io (Alternative Provider)..."
+            flyctl deploy -c deploy/fly/api.fly.toml --image ghcr.io/${{ github.repository_owner }}/kykthuto-api:latest --remote-only || echo "API deployment failed"
+            flyctl deploy -c deploy/fly/worker.fly.toml --image ghcr.io/${{ github.repository_owner }}/kykthuto-worker:latest --remote-only || echo "Worker deployment failed"
+          else
+            echo "::notice::Fly.io API token not configured. Skipping Fly.io deployment."
+          fi
 
