@@ -2,32 +2,28 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { authAPI } from '@/lib/api';
+import { useAuthStore } from '@/store/authStore';
 import { toast } from 'sonner';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login, isLoading } = useAuthStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
     try {
-      const response = await authAPI.login(email, password);
-      if (response.data.user.role === 'NURSE') {
+      const response = await login(email, password);
+      if (response.user.role === 'NURSE') {
         toast.success('Welcome back!');
         router.push('/');
       } else {
         toast.error('Access denied. Nurses only.');
-        await authAPI.logout();
       }
     } catch (error: any) {
       toast.error(error.response?.data?.error || 'Login failed');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -66,10 +62,10 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={isLoading}
             className="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 rounded-lg disabled:opacity-50"
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {isLoading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
       </div>

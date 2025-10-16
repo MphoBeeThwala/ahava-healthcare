@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { authAPI } from '@/lib/api';
+import { useAuthStore } from '@/store/authStore';
 import { toast } from 'sonner';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login, register, isLoading } = useAuthStore();
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     email: '',
@@ -14,25 +15,21 @@ export default function LoginPage() {
     firstName: '',
     lastName: '',
   });
-  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
     try {
       if (isLogin) {
-        await authAPI.login(formData.email, formData.password);
+        await login(formData.email, formData.password);
         toast.success('Welcome back!');
       } else {
-        await authAPI.register(formData);
+        await register(formData);
         toast.success('Account created! Welcome to Ahava Healthcare!');
       }
       router.push('/');
     } catch (error: any) {
       toast.error(error.response?.data?.error || (isLogin ? 'Login failed' : 'Registration failed'));
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -86,10 +83,10 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={isLoading}
             className="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 rounded-lg disabled:opacity-50"
           >
-            {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account')}
+            {isLoading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account')}
           </button>
         </form>
 
