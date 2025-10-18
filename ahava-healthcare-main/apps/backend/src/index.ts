@@ -64,7 +64,7 @@ app.use(helmet({
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
     ? ['https://ahava-healthcare-admin.railway.app', 'https://ahava-healthcare-doctor.railway.app']
-    : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:19006'],
+    : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003', 'http://localhost:19006'],
   credentials: true,
 }));
 
