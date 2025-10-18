@@ -21,15 +21,19 @@ export default function LoginPage() {
 
     try {
       if (isLogin) {
-        await login(formData.email, formData.password);
+        const response = await login(formData.email, formData.password);
+        console.log('Login response:', response);
         toast.success('Welcome back!');
+        router.push('/');
       } else {
         await register(formData);
         toast.success('Account created! Welcome to Ahava Healthcare!');
+        router.push('/');
       }
-      router.push('/');
     } catch (error: any) {
-      toast.error(error.response?.data?.error || (isLogin ? 'Login failed' : 'Registration failed'));
+      console.error('Login error:', error);
+      const errorMsg = error?.response?.data?.error || error?.message || (isLogin ? 'Login failed' : 'Registration failed');
+      toast.error(errorMsg);
     }
   };
 

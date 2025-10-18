@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/authStore';
+import { authAPI } from '@/lib/api';
 import { toast } from 'sonner';
 
 export default function LoginPage() {
@@ -16,14 +17,20 @@ export default function LoginPage() {
 
     try {
       const response = await login(email, password);
-      if (response.user.role === 'NURSE') {
+      console.log('Login response:', response);
+      if (response && response.user && response.user.role === 'NURSE') {
         toast.success('Welcome back!');
         router.push('/');
+      } else if (response && response.user) {
+        toast.error(`Access denied. This portal is for nurses only. Your role: ${response.user.role}`);
+        await authAPI.logout();
       } else {
-        toast.error('Access denied. Nurses only.');
+        toast.error('Login failed. No user data received.');
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.error || 'Login failed');
+      console.error('Login error:', error);
+      const errorMsg = error?.response?.data?.error || error?.message || 'Login failed';
+      toast.error(errorMsg);
     }
   };
 
