@@ -1,29 +1,17 @@
-# Ahava Healthcare
+Ahava Healthcare overview
 
-> **Ahava Healthcare** - A comprehensive healthcare platform designed for South Africa, connecting patients with qualified nurses for home visits and providing doctor oversight for quality healthcare delivery.
+Ahava Healthcare is a comprehensive platform built for South Africa that connects patients with qualified nurses for home visits and keeps doctors in the loop for oversight. The system also supports administrators through analytics, payment reconciliation, and real time monitoring.
 
-## 🏥 Overview
+Project summary
 
-Ahava Healthcare is a full-stack platform that revolutionizes healthcare delivery in South Africa by enabling:
+The platform makes it easy for patients to book visits, nurses to manage day-to-day operations, doctors to supervise care, and the business team to keep things running. Real time features cover messaging, GPS tracking for nurses, visit status updates, and Paystack powered payments.
 
-- **Patient Booking**: Easy scheduling of home healthcare visits
-- **Nurse Operations**: Real-time visit management and patient communication  
-- **Doctor Oversight**: Medical supervision and quality assurance
-- **Admin Management**: System administration and analytics
-- **Secure Payments**: Integrated payment processing with insurance support
+Getting started
 
-## 🚀 Quick Start
+Prerequisites: Node.js 20 or newer, Yarn 4 or newer, a PostgreSQL database, and a Redis instance.
 
-### Prerequisites
-
-- Node.js >= 20.0.0
-- Yarn >= 4.0.0
-- PostgreSQL database
-- Redis instance
-
-### Installation
-
-```bash
+Installation steps:
+```
 # Clone the repository
 git clone https://github.com/MphoBeeThwala/ahava-healthcare.git
 cd ahava-healthcare
@@ -31,8 +19,8 @@ cd ahava-healthcare
 # Install dependencies
 corepack yarn install
 
-# Set up environment variables (already configured for development)
-# apps/backend/.env is pre-configured with development settings
+# Environment variables are already configured for development
+# apps/backend/.env ships with sensible defaults
 
 # Generate Prisma client and run migrations
 corepack yarn prisma:generate
@@ -41,12 +29,10 @@ corepack yarn prisma:migrate
 # Start development servers
 corepack yarn dev
 ```
+For more detailed setup instructions, including database preparation, refer to docs/DEVELOPMENT.md.
 
-**Note**: See [Development Setup Guide](./docs/DEVELOPMENT.md) for detailed installation instructions including database setup.
-
-### Available Scripts
-
-```bash
+Available scripts
+```
 # Development
 corepack yarn dev                 # Start all services
 corepack yarn dev:api            # Backend API only
@@ -67,17 +53,14 @@ corepack yarn prisma:migrate     # Run migrations
 corepack yarn prisma:seed        # Seed database
 corepack yarn db:reset           # Reset database
 
-# Code Quality
+# Code quality
 corepack yarn lint               # Check code style
 corepack yarn lint:fix           # Fix code style issues
 corepack yarn type-check         # TypeScript type checking
 corepack yarn build              # Build all packages
 ```
 
-## 🏗️ Architecture
-
-### Monorepo Structure
-
+Monorepo structure
 ```
 ahava-healthcare/
 ├── apps/
@@ -94,80 +77,34 @@ ahava-healthcare/
 └── docs/               # Documentation
 ```
 
-### Core Features
+Core features
 
-#### 🔐 Authentication & Security
-- JWT-based authentication with refresh tokens
-- Role-based access control (Patient, Nurse, Doctor, Admin)
-- End-to-end encryption for sensitive data
-- HIPAA compliance considerations
+Authentication and security: JWT based authentication with refresh tokens, role based access control (patient, nurse, doctor, admin), encryption for sensitive data, and attention to HIPAA style requirements.
 
-#### 📱 User Management
-- Multi-role user system with profile management
-- Phone and email verification
-- Location tracking for nurses
-- Push notification support
+User management: multi role accounts with profile management, phone and email verification, nurse location tracking, and push notifications.
 
-#### 🏥 Healthcare Operations
-- **Bookings**: Patient appointment scheduling
-- **Visits**: Real-time visit tracking and management
-- **Communication**: In-app messaging system
-- **Reports**: Medical report generation and storage
+Healthcare operations: bookings, visit tracking, in-app messaging, and medical report storage.
 
-#### 💳 Payment Processing
-- Paystack integration for secure payments
-- Insurance claim processing
-- Payment status tracking
-- Refund management
+Payments: Paystack integration, insurance support, status tracking, and refund management.
 
-#### 📊 Real-time Features
-- WebSocket connections for live updates
-- GPS tracking for nurse locations
-- Real-time messaging
-- Live visit status updates
+Real time functionality: WebSockets for live updates, GPS for nurses, messaging, and dynamic visit status.
 
-## 🛠️ Technology Stack
+Technology stack
 
-### Backend
-- **Runtime**: Node.js with TypeScript
-- **Framework**: Express.js
-- **Database**: PostgreSQL with Prisma ORM
-- **Cache**: Redis
-- **Queue**: BullMQ for background jobs
-- **Authentication**: JWT with bcrypt
-- **File Processing**: Sharp, PDFKit
-- **Real-time**: WebSocket
+Backend: Node.js with TypeScript, Express.js, PostgreSQL with Prisma, Redis, BullMQ, JWT with bcrypt, Sharp, PDFKit, and WebSocket support.
 
-### Frontend
-- **Framework**: Next.js (React)
-- **Language**: TypeScript
-- **Styling**: CSS Modules / Tailwind CSS
-- **State Management**: React Query / Zustand
-- **Maps**: Google Maps API
+Frontend: Next.js with TypeScript, CSS Modules, Tailwind CSS, React Query, Zustand, and Google Maps integration.
 
-### Infrastructure
-- **Deployment**: Railway (primary), Render, Fly.io
-- **CI/CD**: GitHub Actions
-- **Monitoring**: Railway dashboard
-- **File Storage**: Local volumes
+Infrastructure: deployable to Railway (primary), Render, or Fly.io with GitHub Actions for CI/CD, Railway dashboards for monitoring, and local volume storage.
 
-## 🚀 Deployment
+Deployment options
 
-Ahava Healthcare supports multiple deployment platforms:
+Railway is the primary target for one click deploys with managed databases. Render and Fly.io are configured as alternatives. See deploy/README.md for platform specific instructions.
 
-- **Railway** (Primary): One-click deployment with managed databases
-- **Render**: Alternative platform with auto-scaling
-- **Fly.io**: Container-based deployment
+Configuration and environment variables
 
-See [Deployment Guide](./deploy/README.md) for detailed setup instructions.
-
-## 🔧 Configuration
-
-### Environment Variables
-
-Key environment variables for the backend:
-
-```bash
+Key values include:
+```
 # Database
 DATABASE_URL=postgresql://...
 
@@ -186,48 +123,30 @@ PAYSTACK_WEBHOOK_SECRET=your-webhook-secret
 TIMEZONE=Africa/Johannesburg
 ```
 
-## 📋 Database Schema
+Database schema
 
-The platform uses a comprehensive PostgreSQL schema with the following main entities:
+Primary entities include users, bookings, visits, messages, payments, and reports. Review apps/backend/prisma/schema.prisma for the complete model definitions.
 
-- **Users**: Patients, nurses, doctors, admins
-- **Bookings**: Appointment scheduling
-- **Visits**: Home visit management
-- **Messages**: Real-time communication
-- **Payments**: Transaction processing
-- **Reports**: Medical documentation
+Contributing guide
 
-See [Prisma Schema](./apps/backend/prisma/schema.prisma) for complete details.
+1. Fork the repository.
+2. Create a feature branch: git checkout -b feature/your-change.
+3. Commit with a clear message.
+4. Push to your fork.
+5. Open a pull request for review.
 
-## 🤝 Contributing
+License
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+The project is released under the MIT License. See the LICENSE file for details.
 
-## 📄 License
+Support
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Email: support@ahavahealthcare.co.za
+Documentation site: https://docs.ahavahealthcare.co.za
+Issue tracker: https://github.com/MphoBeeThwala/ahava-healthcare/issues
 
-## 🆘 Support
+Localization
 
-For support and questions:
+The platform is tailored for South Africa: timezone Africa/Johannesburg (SAST), English language support (with room for local languages), South African Rand as the currency, and alignment with local healthcare regulations.
 
-- **Email**: support@ahavahealthcare.co.za
-- **Documentation**: [docs.ahavahealthcare.co.za](https://docs.ahavahealthcare.co.za)
-- **Issues**: [GitHub Issues](https://github.com/MphoBeeThwala/ahava-healthcare/issues)
-
-## 🌍 Localization
-
-Ahava Healthcare is designed for South Africa with:
-
-- **Timezone**: Africa/Johannesburg (SAST)
-- **Language**: English (en-ZA) with support for local languages
-- **Currency**: South African Rand (ZAR)
-- **Compliance**: Local healthcare regulations
-
----
-
-**Built with ❤️ for South African healthcare**
+Documented by Mpho Thwala on behalf of Ahava on 88 Company.
