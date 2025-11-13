@@ -1,206 +1,59 @@
-# 🚀 Restart All Applications
+Restart instructions for all applications
 
-## ⚡ Quick Restart Guide
-
-Follow these steps to restart all applications cleanly:
-
----
-
-## 📍 **STEP 1: Stop All Running Apps**
-
-If you have apps running in PowerShell windows:
-1. Go to each PowerShell window
-2. Press `Ctrl + C` to stop the running app
-3. Close all PowerShell windows
-
----
-
-## 📍 **STEP 2: Start Backend (Terminal 1)**
-
-Open **PowerShell Window #1** and run:
-
-```powershell
+To restart every service cleanly, begin by returning to each PowerShell window that currently runs an app, pressing Ctrl+C to stop the process, and closing the windows. Open a fresh PowerShell session for the backend and run:
+```
 cd C:\Users\User\OneDrive\Documentos\Projects\ahava-healthcare-main\ahava-healthcare-main\apps\backend
 npm run dev
 ```
+You should see output indicating the server is running on http://localhost:4000, the database is connected, and Redis (if available) is connected. Confirm the backend health endpoint at http://localhost:4000/health responds successfully.
 
-**Expected Output:**
+Launch the admin portal by opening another PowerShell window and executing:
 ```
-✅ Server running on http://localhost:4000
-✅ Database connected
-✅ Redis connected
-```
-
-**Backend URL:** http://localhost:4000/health
-
----
-
-## 📍 **STEP 3: Start Admin Portal (Terminal 2)**
-
-Open **PowerShell Window #2** and run:
-
-```powershell
 cd C:\Users\User\OneDrive\Documentos\Projects\ahava-healthcare-main\ahava-healthcare-main\apps\admin
 npm run dev
 ```
+It should be ready within a few seconds and available at http://localhost:3000/login.
 
-**Expected Output:**
+Start the patient app in a third window:
 ```
-✓ Ready in 2-3s
-○ Local: http://localhost:3000
-```
-
-**Admin Portal URL:** http://localhost:3000/login
-
----
-
-## 📍 **STEP 4: Start Patient App (Terminal 3)**
-
-Open **PowerShell Window #3** and run:
-
-```powershell
 cd C:\Users\User\OneDrive\Documentos\Projects\ahava-healthcare-main\ahava-healthcare-main\apps\patient
 npm run dev
 ```
+This instance serves http://localhost:3002/login.
 
-**Expected Output:**
+Launch the nurse app in a fourth window:
 ```
-✓ Ready in 2-3s
-○ Local: http://localhost:3002
-```
-
-**Patient App URL:** http://localhost:3002/login
-
----
-
-## 📍 **STEP 5: Start Nurse App (Terminal 4)**
-
-Open **PowerShell Window #4** and run:
-
-```powershell
 cd C:\Users\User\OneDrive\Documentos\Projects\ahava-healthcare-main\ahava-healthcare-main\apps\nurse
 npm run dev
 ```
+It will be reachable at http://localhost:3003/login.
 
-**Expected Output:**
+Optionally, start the doctor portal in a fifth window using:
 ```
-✓ Ready in 2-3s
-○ Local: http://localhost:3003
-```
-
-**Nurse App URL:** http://localhost:3003/login
-
----
-
-## 📍 **STEP 6: (Optional) Start Doctor Portal (Terminal 5)**
-
-Open **PowerShell Window #5** and run:
-
-```powershell
 cd C:\Users\User\OneDrive\Documentos\Projects\ahava-healthcare-main\ahava-healthcare-main\apps\doctor
 npm run dev
 ```
+The portal loads at http://localhost:3001/login.
 
-**Expected Output:**
+Test credentials for each application:
 ```
-✓ Ready in 2-3s
-○ Local: http://localhost:3001
+Admin  (http://localhost:3000/login):  admin@example.com  /  password123
+Patient(http://localhost:3002/login):  patient@example.com /  password123
+Nurse  (http://localhost:3003/login):  nurse@example.com   /  password123
+Doctor (http://localhost:3001/login):  doctor@example.com  /  password123
 ```
+After starting the services, confirm that the backend reports the expected startup message, each portal opens on its port, the login pages load, and authentication succeeds with the above accounts.
 
-**Doctor Portal URL:** http://localhost:3001/login
+If you encounter “port already in use” errors, locate the process with `netstat -ano | findstr :4000` (replace 4000 with the blocked port) and end it via `taskkill /PID <PID> /F`. “Module not found” issues typically disappear after running `npm install` inside the affected app directory.
 
----
-
-## 🧪 **Test Credentials**
-
-### **Admin Portal (localhost:3000)**
-```
-Email: admin@example.com
-Password: password123
-```
-
-### **Patient App (localhost:3002)**
-```
-Email: patient@example.com
-Password: password123
-```
-
-### **Nurse App (localhost:3003)**
-```
-Email: nurse@example.com
-Password: password123
-```
-
-### **Doctor Portal (localhost:3001)**
-```
-Email: doctor@example.com
-Password: password123
-```
-
----
-
-## ✅ **Verification Checklist**
-
-After starting each app, verify:
-
-- [ ] Backend shows "Server running on http://localhost:4000"
-- [ ] Admin Portal opens at http://localhost:3000/login
-- [ ] Patient App opens at http://localhost:3002/login
-- [ ] Nurse App opens at http://localhost:3003/login
-- [ ] All login pages load without errors
-- [ ] Can login successfully with test credentials
-
----
-
-## 🐛 **Troubleshooting**
-
-### **Port Already in Use:**
-```powershell
-# Find process using port (e.g., 4000)
-netstat -ano | findstr :4000
-
-# Kill process by PID
-taskkill /PID <PID> /F
-```
-
-### **Module Not Found Errors:**
-```powershell
-# In the app directory
-npm install
-```
-
-### **Backend Not Connecting:**
-Check your `.env` file in `apps/backend/`:
+Should the backend refuse to connect, double-check `.env` under `apps/backend/` for valid values such as:
 ```
 DATABASE_URL="your-database-url"
 REDIS_URL="your-redis-url"
 JWT_SECRET="your-secret"
 ```
+With all steps complete, you should have the backend on port 4000, admin portal on 3000, doctor portal on 3001 (if started), patient app on 3002, and nurse app on 3003. Log in to each interface, verify dashboards, and run through a complete workflow (patient booking to nurse update to doctor review) to ensure integration remains intact.
 
----
+Guide prepared by Mpho Thwala on behalf of Ahava on 88 Company.
 
-## 📊 **Expected Running Services**
-
-After completing all steps:
-
-| Service | Port | URL | Status |
-|---------|------|-----|--------|
-| Backend | 4000 | http://localhost:4000 | ✅ |
-| Admin | 3000 | http://localhost:3000 | ✅ |
-| Doctor | 3001 | http://localhost:3001 | ⏳ |
-| Patient | 3002 | http://localhost:3002 | ✅ |
-| Nurse | 3003 | http://localhost:3003 | ✅ |
-
----
-
-## 🎯 **Next Steps After Restart**
-
-1. **Login Test** - Try logging into each app with the credentials above
-2. **Dashboard Test** - Verify data is displaying correctly
-3. **Flow Test** - Test complete patient → nurse → doctor workflow
-4. **Integration Test** - Test booking creation and visit updates
-
----
-
-**🎉 Good luck! Your Ahava Healthcare platform should be ready to test!**
 
