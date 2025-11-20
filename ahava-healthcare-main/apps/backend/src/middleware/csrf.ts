@@ -11,7 +11,7 @@ interface CSRFToken {
 const csrfTokens = new Map<string, CSRFToken>();
 
 // Clean up expired tokens every hour
-setInterval(() => {
+const csrfCleanupInterval = setInterval(() => {
   const now = new Date();
   for (const [key, value] of csrfTokens.entries()) {
     // Tokens expire after 1 hour
@@ -20,6 +20,10 @@ setInterval(() => {
     }
   }
 }, 3600000);
+
+if (typeof csrfCleanupInterval.unref === 'function') {
+  csrfCleanupInterval.unref();
+}
 
 /**
  * Generate a CSRF token

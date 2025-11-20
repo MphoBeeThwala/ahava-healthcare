@@ -52,6 +52,12 @@ enum MessageType {
   SYSTEM
 }
 
+enum WebhookStatus {
+  RECEIVED
+  PROCESSED
+  FAILED
+}
+
 model User {
   id                String   @id @default(cuid())
   email             String   @unique
@@ -226,6 +232,24 @@ model Payment {
   updatedAt       DateTime      @updatedAt
   
   @@map("payments")
+}
+
+model WebhookEvent {
+  id           String         @id @default(cuid())
+  provider     String
+  eventType    String
+  eventId      String?        @unique
+  reference    String?
+  status       WebhookStatus  @default(RECEIVED)
+  signature    String?
+  payload      Json
+  headers      Json?
+  errorMessage String?
+  retries      Int            @default(0)
+  processedAt  DateTime?
+  createdAt    DateTime       @default(now())
+
+  @@map("webhook_events")
 }
 
 model AuditLog {

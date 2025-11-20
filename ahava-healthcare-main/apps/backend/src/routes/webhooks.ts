@@ -32,42 +32,84 @@ router.post('/paystack', webhookRateLimiter, async (req: Request, res: Response,
 		}
 
 		const event = req.body;
+		const reference = event.data?.reference;
+		const eventId = event.data?.id ? String(event.data.id) : undefined;
 
 		logger.info('Paystack webhook received', {
 			event: event.event,
-			reference: event.data?.reference,
+			reference,
 		});
 
-		// Handle different event types
-		switch (event.event) {
-			case 'charge.success':
-				await handleChargeSuccess(event.data);
-				break;
+		// Deduplicate processed events
+		if (eventId) {
+			const existingEvent = await prisma.webhookEvent.findUnique({
+				where: { eventId },
+			});
 
-			case 'charge.failed':
-				await handleChargeFailed(event.data);
-				break;
-
-			case 'transfer.success':
-				await handleTransferSuccess(event.data);
-				break;
-
-			case 'transfer.failed':
-				await handleTransferFailed(event.data);
-				break;
-
-			case 'refund.processed':
-				await handleRefundProcessed(event.data);
-				break;
-
-			default:
-				logger.info('Unhandled webhook event type', {
-					event: event.event,
-				});
+			if (existingEvent && existingEvent.status === 'PROCESSED') {
+				logger.info('Duplicate webhook event ignored', { eventId, reference });
+				return res.status(200).json({ success: true, duplicate: true });
+			}
 		}
 
-		// Always return 200 to acknowledge receipt
-		res.status(200).json({ success: true });
+		const webhookRecord = await upsertWebhookEvent({
+			event,
+			eventId,
+			reference,
+			signature,
+			headers: req.headers,
+		});
+
+		try {
+			// Handle different event types
+			switch (event.event) {
+				case 'charge.success':
+					await handleChargeSuccess(event.data);
+					break;
+
+				case 'charge.failed':
+					await handleChargeFailed(event.data);
+					break;
+
+				case 'transfer.success':
+					await handleTransferSuccess(event.data);
+					break;
+
+				case 'transfer.failed':
+					await handleTransferFailed(event.data);
+					break;
+
+				case 'refund.processed':
+					await handleRefundProcessed(event.data);
+					break;
+
+				default:
+					logger.info('Unhandled webhook event type', {
+						event: event.event,
+					});
+			}
+
+			await prisma.webhookEvent.update({
+				where: { id: webhookRecord.id },
+				data: {
+					status: 'PROCESSED',
+					processedAt: new Date(),
+					errorMessage: null,
+				},
+			});
+
+			// Always return 200 to acknowledge receipt
+			res.status(200).json({ success: true });
+		} catch (processingError: any) {
+			await prisma.webhookEvent.update({
+				where: { id: webhookRecord.id },
+				data: {
+					status: 'FAILED',
+					errorMessage: processingError?.message || 'Unknown webhook processing error',
+				},
+			});
+			throw processingError;
+		}
 	} catch (error: any) {
 		logger.error('Webhook processing error', {
 			error: error.message,
@@ -212,11 +254,15 @@ async function handleRefundProcessed(data: any) {
 // Webhook event log endpoint (for debugging - admin only)
 router.get('/events', async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		// TODO: Store webhook events in database for auditing
-		res.json({ 
-			success: true, 
-			message: 'Webhook event logging not yet implemented',
-			events: [] 
+		const events = await prisma.webhookEvent.findMany({
+			orderBy: { createdAt: 'desc' },
+			take: 50,
+		});
+
+		res.json({
+			success: true,
+			count: events.length,
+			events,
 		});
 	} catch (error) {
 		next(error);
@@ -224,3 +270,51 @@ router.get('/events', async (req: Request, res: Response, next: NextFunction) =>
 });
 
 export default router;
+
+async function upsertWebhookEvent({
+	event,
+	eventId,
+	reference,
+	signature,
+	headers,
+}: {
+	event: any;
+	eventId?: string;
+	reference?: string;
+	signature: string;
+	headers: Record<string, any>;
+}) {
+	if (eventId) {
+		const existing = await prisma.webhookEvent.findUnique({
+			where: { eventId },
+		});
+
+		if (existing) {
+			return prisma.webhookEvent.update({
+				where: { id: existing.id },
+				data: {
+					status: 'RECEIVED',
+					payload: event,
+					reference,
+					signature,
+					headers,
+					errorMessage: null,
+					processedAt: null,
+					retries: existing.retries + 1,
+				},
+			});
+		}
+	}
+
+	return prisma.webhookEvent.create({
+		data: {
+			provider: 'Paystack',
+			eventType: event.event,
+			eventId,
+			reference,
+			signature,
+			payload: event,
+			headers,
+		},
+	});
+}

@@ -19,7 +19,7 @@ const clients = new Map<string, AuthenticatedWebSocket>();
 const connectionAttempts = new Map<string, { count: number; lastAttempt: Date }>();
 
 // Clean up old connection attempts every hour
-setInterval(() => {
+const connectionCleanupInterval = setInterval(() => {
   const now = new Date();
   for (const [ip, attempt] of connectionAttempts.entries()) {
     if (now.getTime() - attempt.lastAttempt.getTime() > 3600000) { // 1 hour
@@ -27,6 +27,10 @@ setInterval(() => {
     }
   }
 }, 3600000);
+
+if (typeof connectionCleanupInterval.unref === 'function') {
+  connectionCleanupInterval.unref();
+}
 
 /**
  * Extract token from WebSocket connection request

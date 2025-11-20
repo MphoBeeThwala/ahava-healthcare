@@ -14,7 +14,7 @@ interface LoginAttempt {
 const loginAttempts = new Map<string, LoginAttempt>();
 
 // Clean up old entries every hour
-setInterval(() => {
+const loginAttemptCleanup = setInterval(() => {
   const now = new Date();
   for (const [key, attempt] of loginAttempts.entries()) {
     if (attempt.lockoutUntil && attempt.lockoutUntil < now) {
@@ -24,6 +24,10 @@ setInterval(() => {
     }
   }
 }, 3600000);
+
+if (typeof loginAttemptCleanup.unref === 'function') {
+  loginAttemptCleanup.unref();
+}
 
 // General API rate limiter
 export const rateLimiter = rateLimit({
