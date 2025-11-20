@@ -1,0 +1,123 @@
+# Docker Compose for Ahava Healthcare Backend (API + Workers)
+# This extends the root docker-compose.yml with backend services
+#
+# Usage:
+#   docker compose up -d          # Start all services
+#   docker compose logs -f api    # View API logs
+#   docker compose down           # Stop all services
+#
+version: '3.8'
+
+services:
+  # Backend API Server
+  api:
+    build:
+      context: ../..
+      dockerfile: apps/backend/Dockerfile
+    image: ahava-backend:latest
+    container_name: ahava-api
+    restart: unless-stopped
+    ports:
+      - "${PORT:-4000}:4000"
+    env_file:
+      - .env.production
+    environment:
+      - DATABASE_URL=postgresql://ahava_user:ahava_dev_password@postgres:5432/ahava-healthcare?schema=public
+      - REDIS_URL=redis://:ahava_redis_pass@redis:6379/0
+      - NODE_ENV=production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
+    networks:
+      - ahava-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:4000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Background Worker (Email, PDF, Push Notifications)
+  worker:
+    build:
+      context: ../..
+      dockerfile: apps/backend/Dockerfile
+    image: ahava-backend:latest
+    container_name: ahava-worker
+    restart: unless-stopped
+    command: ["node", "dist/workers/index.js"]
+    env_file:
+      - .env.production
+    environment:
+      - DATABASE_URL=postgresql://ahava_user:ahava_dev_password@postgres:5432/ahava-healthcare?schema=public
+      - REDIS_URL=redis://:ahava_redis_pass@redis:6379/0
+      - NODE_ENV=production
+    depends_on:
+      api:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
+    networks:
+      - ahava-network
+
+  # PostgreSQL Database (from root docker-compose.yml)
+  postgres:
+    image: postgres:15-alpine
+    container_name: ahava-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ahava_user
+      POSTGRES_PASSWORD: ahava_dev_password
+      POSTGRES_DB: ahava-healthcare
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ahava_user -d ahava-healthcare"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ahava-network
+
+  # Redis Cache & Queue
+  redis:
+    image: redis:7-alpine
+    container_name: ahava-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ahava_redis_pass
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "ahava_redis_pass", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ahava-network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  ahava-network:
+    name: ahava-network
+    driver: bridge
+

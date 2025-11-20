@@ -1,0 +1,6 @@
+# Worker Dockerfile - extends main Dockerfile but runs worker process
+FROM ahava-backend:latest
+
+# Override command to run worker instead of API
+CMD ["node", "dist/workers/index.js"]
+
