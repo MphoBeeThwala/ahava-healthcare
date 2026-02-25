@@ -6,7 +6,6 @@ export const initializeRedis = async () => {
   const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
   
   redis = new Redis(redisUrl, {
-    retryDelayOnFailover: 100,
     enableReadyCheck: false,
     maxRetriesPerRequest: null,
     lazyConnect: true,

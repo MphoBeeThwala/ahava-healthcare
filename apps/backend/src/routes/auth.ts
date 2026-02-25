@@ -265,16 +265,23 @@ function generateTokens(userId: string, role: string) {
     throw new Error('JWT_SECRET not configured');
   }
 
+  const accessTokenExpiry = process.env.JWT_EXPIRES_IN
+    ? parseInt(process.env.JWT_EXPIRES_IN, 10)
+    : 900;
+  const refreshTokenExpiry = process.env.REFRESH_TOKEN_EXPIRES_IN
+    ? parseInt(process.env.REFRESH_TOKEN_EXPIRES_IN, 10)
+    : 604800;
+
   const accessToken = jwt.sign(
     { userId, role },
     process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN || '15m' }
+    { expiresIn: accessTokenExpiry }
   );
 
   const refreshToken = jwt.sign(
     { userId, role },
     process.env.JWT_SECRET,
-    { expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN || '7d' }
+    { expiresIn: refreshTokenExpiry }
   );
 
   // Store refresh token in database
