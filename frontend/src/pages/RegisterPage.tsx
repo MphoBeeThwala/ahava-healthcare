@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { Container, Paper, Typography, TextField, Button, Alert, MenuItem } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { register } from '../api';
+import { useAuth } from '../AuthContext';
 
 const roles = [
   { value: 'PATIENT', label: 'Patient' },
@@ -8,32 +11,27 @@ const roles = [
   { value: 'ADMIN', label: 'Admin' },
 ];
 
-export default function RegisterPage({ onRegister }: { onRegister?: () => void }) {
+export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('PATIENT');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { login: setAuthUser } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
     try {
-      // @ts-ignore
-      const { register } = await import('../api');
       const data = await register(email, password, role);
-      // @ts-ignore
-      const { useAuth } = await import('../AuthContext');
-      // @ts-ignore
-      const { login: setAuthUser } = useAuth();
       setAuthUser({
         id: data.user.id,
         email: data.user.email,
         role: data.user.role,
-        token: data.token,
+        token: data.accessToken,
       });
-      // Redirect based on role
       if (data.user.role === 'ADMIN') navigate('/dashboard');
       else if (data.user.role === 'NURSE') navigate('/dashboard');
       else if (data.user.role === 'DOCTOR') navigate('/dashboard');

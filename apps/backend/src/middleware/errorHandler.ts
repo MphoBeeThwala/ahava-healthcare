@@ -12,7 +12,7 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  let error = { ...err };
+  const error: AppError = { ...err };
   error.message = err.message;
 
   // Log error
