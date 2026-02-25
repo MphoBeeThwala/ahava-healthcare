@@ -32,6 +32,6 @@ The frontend is a standalone project (not in the Yarn workspace). It has its own
 - **Queue init order:** `apps/backend/src/services/queue.ts` was fixed to lazily create BullMQ queues inside `initializeQueue()`. The original code called `getRedis()` at module level before Redis was initialized, which crashed on startup.
 - **Frontend API URL:** `frontend/src/api.ts` defaults `API_BASE_URL` to `http://localhost:3000`, but the backend runs on port 4000. Set `VITE_API_URL=http://localhost:4000/api` when running the frontend if you need API calls to work.
 - **Auth rate limiter:** The `/api/auth/*` endpoints are rate-limited to 5 requests per 15 minutes per IP. During development/testing, this can be quickly exhausted.
-- **No ESLint config:** The backend and frontend have `lint` scripts in `package.json`, but no `.eslintrc` config files exist. `yarn lint` will fail. Use `yarn type-check` for code quality checks instead.
-- **No test files:** `yarn test` exits with code 1 ("no tests found"). There are no test files in the codebase yet.
-- **TypeScript type-check has pre-existing errors.** The backend runs via `tsx` (transpile-only) so these don't block runtime.
+- **ESLint:** Both backend (`apps/backend/.eslintrc.json`) and frontend (`frontend/.eslintrc.json`) have configs. `yarn lint` runs the backend lint. `cd frontend && yarn lint` runs the frontend lint. Both pass with 0 errors.
+- **Tests:** `yarn test:backend` runs 28 Jest tests (health, auth, encryption). Tests mock Prisma and the rate limiter. A separate `tsconfig.test.json` includes test files with Jest types.
+- **TypeScript type-check:** `yarn type-check` passes clean. `noImplicitReturns` is set to `false` (standard for Express).
