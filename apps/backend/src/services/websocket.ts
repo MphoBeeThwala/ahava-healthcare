@@ -36,7 +36,7 @@ export const initializeWebSocket = (wss: WebSocketServer) => {
       ws.userRole = decoded.role;
       
       // Store client connection
-      clients.set(ws.userId, ws);
+      clients.set(ws.userId!, ws);
       
       console.log(`✅ WebSocket authenticated for user ${ws.userId}`);
     } catch (error) {

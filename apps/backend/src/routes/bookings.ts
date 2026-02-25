@@ -117,22 +117,6 @@ router.get('/', async (req: AuthenticatedRequest, res, next) => {
             phone: true,
           },
         },
-        nurse: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-          },
-        },
-        doctor: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-          },
-        },
         visit: {
           select: {
             id: true,
@@ -172,22 +156,6 @@ router.get('/:id', async (req: AuthenticatedRequest, res, next) => {
             lastName: true,
             email: true,
             phone: true,
-          },
-        },
-        nurse: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-          },
-        },
-        doctor: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
           },
         },
         visit: {

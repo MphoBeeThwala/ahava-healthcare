@@ -11,11 +11,12 @@ interface Visit {
   status: string;
   scheduledStart: string;
   nurseId: string;
+  patientId?: string;
   doctorId?: string;
   createdAt: string;
 }
 
-
+export default function VisitsPage() {
   const { user } = useAuth();
   const [visits, setVisits] = useState<Visit[]>([]);
   const [loading, setLoading] = useState(true);

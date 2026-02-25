@@ -64,8 +64,7 @@ router.put('/:id', authMiddleware, async (req: Request, res: Response, next: Nex
 			data: req.body,
 		});
 		res.json({ success: true, visit });
-	} catch (error) {
-		// If not found, Prisma throws an error with code 'P2025'
+	} catch (error: any) {
 		if (error.code === 'P2025') {
 			res.status(404).json({ error: 'Visit not found' });
 		} else {
@@ -74,13 +73,12 @@ router.put('/:id', authMiddleware, async (req: Request, res: Response, next: Nex
 	}
 });
 
-// Delete a visit
 // Delete a visit with 404 handling
 router.delete('/:id', authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		await prisma.visit.delete({ where: { id: req.params.id } });
 		res.json({ success: true });
-	} catch (error) {
+	} catch (error: any) {
 		if (error.code === 'P2025') {
 			res.status(404).json({ error: 'Visit not found' });
 		} else {
