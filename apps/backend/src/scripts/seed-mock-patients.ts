@@ -2,9 +2,9 @@
  * Seed mock patient users for load and early-warning testing.
  *
  * Usage:
- *   pnpm run seed:mock-patients
- *   MOCK_PATIENT_COUNT=500 pnpm run seed:mock-patients
- *   MOCK_WITH_HISTORY=1 MOCK_EARLY_WARNING_COUNT=50 pnpm run seed:mock-patients
+ *   yarn seed:mock-patients
+ *   MOCK_PATIENT_COUNT=500 yarn seed:mock-patients
+ *   MOCK_WITH_HISTORY=1 MOCK_EARLY_WARNING_COUNT=50 yarn seed:mock-patients
  *
  * Env:
  *   MOCK_PATIENT_COUNT       Number of patients to create (default 1000)

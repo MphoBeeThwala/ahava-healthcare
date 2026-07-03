@@ -5,7 +5,7 @@
  * Excludes @cloudflare/vite-plugin (server-side only) so the
  * pure SPA is output to dist/client for `npx cap sync android`.
  *
- * Usage:  pnpm build:capacitor
+ * Usage:  yarn build:capacitor
  */
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
@@ -18,7 +18,7 @@ import { fileURLToPath, URL } from "node:url";
  * Real device:  https://your-backend.up.railway.app
  *
  * Override by setting CAPACITOR_API_URL in your shell before building:
- *   $env:CAPACITOR_API_URL="https://my-api.up.railway.app"; pnpm build:capacitor
+ *   $env:CAPACITOR_API_URL="https://my-api.up.railway.app"; yarn build:capacitor
  */
 const apiUrl = process.env.CAPACITOR_API_URL ?? "http://10.0.2.2:4000";
 

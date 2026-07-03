@@ -9,9 +9,8 @@ COPY package.json .yarnrc.yml ./
 COPY apps/backend/package.json ./apps/backend/
 COPY apps/worker/package.json ./apps/worker/
 COPY workspace/package.json ./workspace/
-# Copy yarn.lock if present (commit it after first local `yarn install`)
-COPY yarn.lock* ./
-RUN yarn install
+# yarn.lock is optional on first setup; commit it after running `yarn install` locally
+RUN touch yarn.lock && yarn install
 
 # Build Next.js standalone
 FROM base AS builder
@@ -23,7 +22,6 @@ RUN mkdir -p /app/workspace/public && yarn workspace workspace build
 # Production image — standalone server
 # outputFileTracingRoot=repo-root causes Next.js to nest server.js at
 # standalone/workspace/server.js (path relative to tracing root).
-# WORKDIR /app so that COPY standalone ./ lands server.js at /app/workspace/server.js.
 FROM node:20-alpine AS runner
 RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
 WORKDIR /app

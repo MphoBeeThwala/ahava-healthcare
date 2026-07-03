@@ -1,6 +1,6 @@
 /**
  * Minimal smoke test: health check and env validation.
- * Run with: pnpm test (from apps/backend) or pnpm --filter @ahava-healthcare/api test
+ * Run with: yarn test (from apps/backend) or yarn workspace @ahava-healthcare/api test
  */
 describe('Health / smoke', () => {
   it('should have NODE_ENV or allow test env', () => {

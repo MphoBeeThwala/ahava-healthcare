@@ -1,7 +1,7 @@
 /**
  * Seed script: create first admin user if none exist.
  * Set in .env: ADMIN_EMAIL, ADMIN_PASSWORD (required), optional ADMIN_FIRST_NAME, ADMIN_LAST_NAME.
- * Run: pnpm prisma:seed  or  npx prisma db seed
+ * Run: yarn prisma:seed  or  npx prisma db seed
  */
 import 'dotenv/config';
 import bcrypt from 'bcryptjs';

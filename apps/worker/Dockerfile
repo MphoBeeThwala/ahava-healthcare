@@ -7,8 +7,8 @@ COPY package.json .yarnrc.yml ./
 COPY apps/backend/package.json ./apps/backend/
 COPY apps/worker/package.json ./apps/worker/
 COPY workspace/package.json ./workspace/
-COPY yarn.lock* ./
-RUN yarn install
+# yarn.lock is optional on first setup; commit it after running `yarn install` locally
+RUN touch yarn.lock && yarn install
 
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules

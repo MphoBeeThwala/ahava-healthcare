@@ -141,3 +141,6 @@ apps/ml-service/models/
 # Sensitive business documents
 # ──────────────────────────────────────────────
 INVESTOR_DEMO_GUIDE.md
+
+# Yarn 4 internal state — regenerated on install, do not commit
+.yarn/install-state.gz

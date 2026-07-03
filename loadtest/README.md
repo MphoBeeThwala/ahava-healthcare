@@ -14,7 +14,7 @@ This repository includes a k6 load test suite designed to model real platform us
 Create mock patients (default 1000):
 
 ```powershell
-pnpm seed:mock-patients
+yarn seed:mock-patients
 ```
 
 Optional:
@@ -22,7 +22,7 @@ Optional:
 ```powershell
 $env:MOCK_PATIENT_COUNT=5000
 $env:MOCK_PATIENT_PASSWORD="MockPatient1!"
-pnpm seed:mock-patients
+yarn seed:mock-patients
 ```
 
 Users are created as:

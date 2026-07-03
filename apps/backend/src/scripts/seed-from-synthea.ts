@@ -6,8 +6,8 @@
  *   2. Copy or point SYNTHEA_CSV_PATH to the directory containing patients.csv and observations.csv.
  *
  * Usage:
- *   pnpm run seed:from-synthea
- *   SYNTHEA_CSV_PATH=./output/csv SYNTHEA_PASSWORD='MyResearch1!' pnpm run seed:from-synthea
+ *   yarn seed:from-synthea
+ *   SYNTHEA_CSV_PATH=./output/csv SYNTHEA_PASSWORD='MyResearch1!' yarn seed:from-synthea
  *
  * Env:
  *   SYNTHEA_CSV_PATH   Directory with patients.csv and observations.csv (default: ./synthea-output/csv)
@@ -21,7 +21,7 @@ import * as path from 'path';
 import bcrypt from 'bcryptjs';
 import prisma from '../lib/prisma';
 
-// Resolve CSV path: env wins; else try cwd, parent, and repo root (pnpm runs with cwd=apps/backend)
+// Resolve CSV path: env wins; else try cwd, parent, and repo root (yarn runs with cwd=apps/backend)
 function resolveCsvPath(): string {
   if (process.env.SYNTHEA_CSV_PATH) {
     const p = process.env.SYNTHEA_CSV_PATH;
@@ -127,7 +127,7 @@ async function main() {
 
   if (!fs.existsSync(patientsPath)) {
     console.error('[seed-from-synthea] Missing patients.csv at', patientsPath);
-    console.error('Run Synthea first: pnpm run synthea:run-and-seed (writes to repo root output/csv).');
+    console.error('Run Synthea first: yarn synthea:run-and-seed (writes to repo root output/csv).');
     console.error('Or set SYNTHEA_CSV_PATH to the folder containing patients.csv (e.g. ../../output/csv from backend).');
     process.exit(1);
   }

@@ -168,4 +168,4 @@ if (!fs.existsSync(csvPath) || !fs.existsSync(path.join(csvPath, 'patients.csv')
 
 const env = { ...process.env, SYNTHEA_CSV_PATH: csvPath };
 console.log('[synthea] Seeding from', csvPath);
-run(`pnpm run seed:from-synthea`, { env });
+run(`yarn seed:from-synthea`, { env });

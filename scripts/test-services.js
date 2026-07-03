@@ -2,7 +2,7 @@
 /**
  * Smoke test: backend health, auth, and key services.
  * Run with: node scripts/test-services.js
- * Requires backend at http://localhost:4000 (pnpm dev:api).
+ * Requires backend at http://localhost:4000 (yarn dev:api).
  */
 
 const BASE = process.env.BACKEND_URL || 'http://localhost:4000';

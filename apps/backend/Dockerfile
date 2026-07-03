@@ -6,9 +6,8 @@ WORKDIR /app
 # Install all dependencies (including devDependencies needed for build)
 FROM base AS deps
 COPY package.json ./
-# Copy yarn.lock if present (commit it after first local `yarn install` inside apps/backend)
-COPY yarn.lock* ./
-RUN yarn install
+# yarn.lock is optional on first setup; commit it after running `yarn install` locally
+RUN touch yarn.lock && yarn install
 
 # Build: generate Prisma client, compile TypeScript
 FROM base AS builder
