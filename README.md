@@ -1,10 +1,10 @@
 # Ahava Healthcare
 
-A full-stack healthcare platform for South Africa — connecting patients with qualified nurses for home visits, with real-time doctor oversight and an ML-powered early-warning system.
+A full-stack healthcare platform for South Africa — uber styled booking service connecting patients with qualified nurses, remote AI assited triage and diagnosis and home visits, with real-time doctor oversight and an ML-powered early-warning system.
 
 ## Overview
 
-- **Patient Portal** — book home healthcare visits, track nurse arrival, view visit history
+- **Patient Portal** — book home healthcare visits,remote AI assisted consultation, track nurse arrival, view visit history, view medical history, health passport
 - **Nurse Operations** — manage active visits, patient communication, real-time location tracking
 - **Doctor Oversight** — medical supervision, quality assurance, report review
 - **Early Warning (ML)** — patient risk scoring powered by a Python/FastAPI ML service
